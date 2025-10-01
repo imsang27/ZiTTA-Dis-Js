@@ -1,11 +1,16 @@
 {
-  "name": "bot",
+  "name": "ZiTTA",
   "version": "1.0.0",
-  "description": "",
+  "description": "Discord Bot with advanced server management features",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "zitta": "node index.js",
     "r": "node index.js"
   },
+  "keywords": ["discord", "bot", "server-management"],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "discord.js": "^11.5.1"
   }

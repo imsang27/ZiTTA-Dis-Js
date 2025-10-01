@@ -6,10 +6,12 @@ const byeChannelName = "안녕히가세요";
 const welcomeChannelComment = "어서오세요.";
 const byeChannelComment = "안녕히가세요.";
 
+// 봇이 준비되었을 때 실행되는 이벤트 핸들러
 client.on('ready', () => {
-  console.log('켰다.');
+  console.log("ZiTTA 봇이 온라인 상태 입니다!");
 });
 
+// 새 멤버 입장 시 환영 메시지
 client.on("guildMemberAdd", (member) => {
   const guild = member.guild;
   const newUser = member.user;
@@ -20,6 +22,7 @@ client.on("guildMemberAdd", (member) => {
   member.addRole(guild.roles.find(role => role.name == "게스트"));
 });
 
+// 멤버 퇴장 시 작별 메시지
 client.on("guildMemberRemove", (member) => {
   const guild = member.guild;
   const deleteUser = member.user;
@@ -28,13 +31,22 @@ client.on("guildMemberRemove", (member) => {
   byeChannel.send(`<@${deleteUser.id}> ${byeChannelComment}\n`);
 });
 
+// 메시지 이벤트 핸들러
 client.on('message', (message) => {
   if(message.author.bot) return;
 
+  // 기본 ping 명령어 (ZiTTA에서 가져온 기능)
+  if(message.content === "!ping") {
+    message.channel.send("Pong");
+    return;
+  }
+
+  // 고급 ping 명령어 (ZiTTA_에서 가져온 기능)
   if(message.content == 'ping') {
     return message.reply('pong');
   }
 
+  // 임베드 예제 1
   if(message.content == 'embed') {
     let img = 'https://cdn.discordapp.com/icons/419671192857739264/6dccc22df4cb0051b50548627f36c09b.webp?size=256';
     let embed = new Discord.RichEmbed()
@@ -53,19 +65,23 @@ client.on('message', (message) => {
       .setFooter('나긋해가 만듬', img)
 
     message.channel.send(embed)
-  } else if(message.content == 'embed2') {
+  } 
+  // 도움말 임베드
+  else if(message.content == 'embed2') {
     let helpImg = 'https://images-ext-1.discordapp.net/external/RyofVqSAVAi0H9-1yK6M8NGy2grU5TWZkLadG-rwqk0/https/i.imgur.com/EZRAPxR.png';
     let commandList = [
-      {name: 'ping', desc: '현재 핑 상태'},
+      {name: '!ping', desc: '현재 핑 상태 (기본)'},
+      {name: 'ping', desc: '현재 핑 상태 (고급)'},
       {name: 'embed', desc: 'embed 예제1'},
       {name: 'embed2', desc: 'embed 예제2 (help)'},
       {name: '!전체공지', desc: 'dm으로 전체 공지 보내기'},
+      {name: '!청소', desc: '메시지 삭제 기능'},
     ];
     let commandStr = '';
     let embed = new Discord.RichEmbed()
-      .setAuthor('Help of 콜라곰 BOT', helpImg)
+      .setAuthor('Help of ZiTTA BOT', helpImg)
       .setColor('#186de6')
-      .setFooter(`콜라곰 BOT ❤️`)
+      .setFooter(`ZiTTA BOT ❤️`)
       .setTimestamp()
     
     commandList.forEach(x => {
@@ -77,6 +93,7 @@ client.on('message', (message) => {
     message.channel.send(embed)
   }
 
+  // 전체 공지 기능
   if(message.content.startsWith('!전체공지')) {
     if(checkPermission(message)) return
     if(message.member != null) { // 채널에서 공지 쓸 때
@@ -92,6 +109,7 @@ client.on('message', (message) => {
     }
   }
 
+  // 메시지 삭제 기능
   if(message.content.startsWith('!청소')) {
     if(checkPermission(message)) return
 
@@ -101,7 +119,7 @@ client.on('message', (message) => {
     if(isNum && (clearLine <= 0 || 100 < clearLine)) {
       message.channel.send("1부터 100까지의 숫자만 입력해주세요.")
       return;
-    } else if(!isNum) { // c @나긋해 3
+    } else if(!isNum) { // 특정 사용자 메시지 삭제
       if(message.content.split('<@').length == 2) {
         if(isNaN(message.content.split(' ')[2])) return;
 
@@ -130,6 +148,7 @@ client.on('message', (message) => {
   }
 });
 
+// 권한 확인 함수
 function checkPermission(message) {
   if(!message.member.hasPermission("MANAGE_MESSAGES")) {
     message.channel.send(`<@${message.author.id}> ` + "명령어를 수행할 관리자 권한을 소지하고 있지않습니다.")
@@ -139,6 +158,7 @@ function checkPermission(message) {
   }
 }
 
+// 명령어 문자열 길이 조정 함수
 function changeCommandStringLength(str, limitLen = 8) {
   let tmp = str;
   limitLen -= tmp.length;
@@ -150,6 +170,7 @@ function changeCommandStringLength(str, limitLen = 8) {
   return tmp;
 }
 
+// 자동 메시지 삭제 함수
 async function AutoMsgDelete(message, str, delay = 3000) {
   let msg = await message.channel.send(str);
 
@@ -158,5 +179,5 @@ async function AutoMsgDelete(message, str, delay = 3000) {
   }, delay);
 }
 
-
+// 봇 실행
 client.login(token);
